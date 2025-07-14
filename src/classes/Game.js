@@ -1,8 +1,8 @@
 import { Player } from "./Player.js";
-import { message } from "../utils/index.js";
+import { log } from "../utils/index.js";
 
 // Game assets
-import { characters, roundTypes, tracks } from "../assets/index.js";
+import { characters, roundTypes, tracks, items } from "../assets/index.js";
 
 export class Game {
   #track = null;
@@ -17,10 +17,10 @@ export class Game {
   }
 
   async start() {
-    await this.log(
+    await this.gameLog(
       "\n🏁 Bem-vindo(a) ao Simulador de Corridas do Mario Kart! 🏁\n"
     );
-    await this.log("🏁 Iniciando o jogo! 🏁\n");
+    await this.gameLog("🏁 Iniciando o jogo! 🏁\n");
 
     await this.drawPlayers();
     await this.drawTrack();
@@ -28,15 +28,21 @@ export class Game {
   }
 
   async drawPlayers() {
-    await this.log("Sorteando personagens\n");
+    await this.gameLog("Sorteando personagens\n");
 
-    await this.log("Sorteando personagem 1... 🎲", 2000 / this.gameSpeedFactor);
+    await this.gameLog(
+      "Sorteando personagem 1... 🎲",
+      2000 / this.gameSpeedFactor
+    );
 
     let player1Index = Math.floor(Math.random() * characters.length);
     this.player1 = new Player(...Object.values(characters[player1Index]));
-    await this.log(`${this.player1.getPlayerInfo()}\n`);
+    await this.gameLog(`${this.player1.getPlayerInfo()}\n`);
 
-    await this.log("Sorteando personagem 2... 🎲", 2000 / this.gameSpeedFactor);
+    await this.gameLog(
+      "Sorteando personagem 2... 🎲",
+      2000 / this.gameSpeedFactor
+    );
 
     let player2Index;
     do {
@@ -47,29 +53,29 @@ export class Game {
     } while (!player2Index);
 
     this.player2 = new Player(...Object.values(characters[player2Index]));
-    await this.log(`${this.player2.getPlayerInfo()}\n`);
+    await this.gameLog(`${this.player2.getPlayerInfo()}\n`);
   }
 
   async drawTrack() {
-    await this.log("Sorteando pista", 2000 / this.gameSpeedFactor);
+    await this.gameLog("Sorteando pista", 2000 / this.gameSpeedFactor);
 
     const trackIndex = Math.floor(Math.random() * tracks.length);
     this.#track = tracks[trackIndex];
-    await this.log(`A corrida acontecerá em ${this.#track.name}`);
-    await this.log(`Número de voltas: ${this.#track.laps}\n`);
+    await this.gameLog(`A corrida acontecerá em ${this.#track.name}`);
+    await this.gameLog(`Número de voltas: ${this.#track.laps}\n`);
   }
 
   async startRace() {
-    await this.log(
+    await this.gameLog(
       "🏁🏁🏁 A corrida vai começar! 🏁🏁🏁\n",
       3000 / this.gameSpeedFactor
     );
 
-    await this.log("🚧 Preparar...");
+    await this.gameLog("🚧 Preparar...");
 
-    await this.log("🚧 Apontar...");
+    await this.gameLog("🚧 Apontar...");
 
-    await this.log(
+    await this.gameLog(
       "🚗💨 A corrida começou!! 🚗💨\n",
       2000 / this.gameSpeedFactor
     );
@@ -78,70 +84,66 @@ export class Game {
       await this.playRound(i + 1);
     }
 
-    await this.log(`\n🚩 Fim do jogo! 🚩\n`);
+    await this.gameLog(`\n🚩 Fim do jogo! 🚩\n`);
 
     await this.endGame();
   }
 
   async playRound(round) {
     const rountType = this.drawRoundType();
-    await this.log(`\nO Round ${round} é de ${rountType.name}\n`);
+    await this.gameLog(
+      `\n ----- ⚔️ ⚔️ ⚔️  O Round ${round} é de ${rountType.name} ⚔️ ⚔️ ⚔️  -----\n`
+    );
+
+    this.player1.drawItem();
+    this.player2.drawItem();
+    await this.gameLog("");
 
     const player1AttackValue = await this.player1.play(rountType.attribute);
+    await this.gameLog("---");
     const player2AttackValue = await this.player2.play(rountType.attribute);
-    const player1TotalAttackValue =
-      player1AttackValue.diceValue + player1AttackValue.attributeValue;
-    const player2TotalAttackValue =
-      player2AttackValue.diceValue + player2AttackValue.attributeValue;
+    await this.gameLog("---");
 
-    await this.log(
-      `${this.player1.name} tirou ${player1AttackValue.diceValue} 🎲 | +${player1AttackValue.attributeValue} | Total: ${player1TotalAttackValue}`
-    );
-
-    await this.log(
-      `${this.player2.name} tirou ${player2AttackValue.diceValue} 🎲 | +${player2AttackValue.attributeValue} | Total: ${player2TotalAttackValue}`
-    );
-
-    if (player1TotalAttackValue > player2TotalAttackValue) {
+    if (player1AttackValue > player2AttackValue) {
       this.player1.increaseScore();
-      await this.log(
+      await this.gameLog(
         `${this.player1.name} ganhou 1 ponto! (${this.player1.getScore()}) ⭐`
       );
 
       if (rountType.attribute === "power") {
         this.player2.decreaseScore();
-        await this.log(
+        await this.gameLog(
           `${this.player2.name} perdeu 1 ponto! (${this.player2.getScore()}) 🥹`,
           this.gameSpeed
         );
       } else {
-        await this.log(
+        await this.gameLog(
           `${
             this.player2.name
           } manteve sua posição! (${this.player2.getScore()})`
         );
       }
-    } else if (player1TotalAttackValue < player2TotalAttackValue) {
+    } else if (player1AttackValue < player2AttackValue) {
       this.player2.increaseScore();
-      await this.log(
+      await this.gameLog(
         `${this.player2.name} ganhou 1 ponto! (${this.player2.getScore()}) ⭐`
       );
 
       if (rountType.attribute === "power") {
         this.player1.decreaseScore();
-        await this.log(
+        await this.gameLog(
           `${this.player1.name} perdeu 1 ponto! (${this.player1.getScore()}) 🥹`,
           this.gameSpeed
         );
       } else {
-        await this.log(
+        await this.gameLog(
           `${
             this.player1.name
           } manteve sua posição! (${this.player1.getScore()})`
         );
       }
     } else {
-      await this.log("💥 Empate! 💥");
+      await this.gameLog("💥 Empate! 💥");
     }
   }
 
@@ -159,18 +161,20 @@ export class Game {
     }
 
     if (this.winner) {
-      await this.log(
+      await this.gameLog(
         `🥇 1º Lugar: ${this.winner.name} | ${this.winner.getScore()} pontos.`
       );
-      await this.log(
+      await this.gameLog(
         `🥈 2º Lugar: ${this.loser.name} | ${this.loser.getScore()} pontos.`
       );
     } else {
-      await this.log(`A corrida foi bem acirrada e terminou em empate! 👏😯`);
+      await this.gameLog(
+        `A corrida foi bem acirrada e terminou em empate! 👏😯`
+      );
     }
   }
 
-  async log(messageStr, delay = this.gameSpeed) {
-    await message(messageStr, delay);
+  async gameLog(messageStr, delay = this.gameSpeed) {
+    await log(messageStr, delay);
   }
 }

@@ -1,3 +1,3 @@
-export function roll() {
+export function rollDice() {
   return Math.floor(Math.random() * 6) + 1;
 }

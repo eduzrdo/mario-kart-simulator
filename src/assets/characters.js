@@ -49,11 +49,11 @@ export const characters = [
     intelligence: 3,
   },
   {
-    name: "Gohan",
-    speed: 4,
+    name: "Mega Man",
+    speed: 3,
     maneuverability: 4,
-    power: 4,
-    intelligence: 4,
+    power: 5,
+    intelligence: 3,
   },
   {
     name: "Naruto",

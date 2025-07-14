@@ -1,3 +1,3 @@
 export * from "./delay.js";
-export * from "./message.js";
+export * from "./log.js";
 export * from "./roll.js";

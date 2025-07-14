@@ -1,5 +1,5 @@
 import { Game } from "./src/classes/Game.js";
 
-const game = new Game(2);
+export const game = new Game(10);
 
 game.start();
