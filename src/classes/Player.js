@@ -1,4 +1,4 @@
-import { rollDice, log } from "../utils/index.js";
+import { rollDice } from "../utils/index.js";
 import { items } from "../assets/items.js";
 import { game } from "../../index.js";
 
