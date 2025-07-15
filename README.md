@@ -19,7 +19,8 @@ O objetivo do projeto é fornecer uma experiência de jogo simulando uma corrida
 
 ## Diferenciais do projeto original ✨
 
-Foi incluído um sistema de itens, onde os jogadores tem uma chance de obter um item a cada volta na pista, e durante a disputa da volta em questão, usam esses itens para aumentar seu poder de combate.
+- Foi incluído um sistema de itens, onde os jogadores tem uma chance de obter um item a cada volta na pista, e durante a disputa da volta em questão, usam esses itens para aumentar seu poder de combate.
+- O projeto também foi codificado de uma forma que o jogador possa alterar o jogo, e até adicionar novos personagens e itens.
 
 ## Como executar o projeto 🏃
 
@@ -48,3 +49,25 @@ npm install
 ```
 npm start
 ```
+
+## Como deixar o jogo com a sua cara 💡🛠️
+
+Você pode alterar as configurações do jogo e o seu conteúdo de uma forma bem simples, basta alterar os seguintes arquivos, seguindo seus formatos:
+
+### Alterar a velocidade do jogo:
+
+- `index.js`: nesse arquivo na raiz do proejto, altere a 3ª linha, onde o jogo é instanciado antes de ser iniciado, você pode passar a velocidade do jogo como parâmetro.
+
+`export const game = new Game(<INSIRA AQUI A VELOCIDADE DO JOGO>);`
+
+Ex.: `export const game = new Game(10);`
+
+Salve o jogo e rode-o novamente com o comando `npm start`.
+
+Se nenhum parâmetro for passado, o jogo será iniciado com a velocidade padrão (1).
+
+### Para adicionar novos conteúdos:
+
+- `src/assets/characters.js`: aqui você pode alterar as características dos personagens, e até adicionar novos personagens.
+- `src/assets/items.js`: aqui você pode adicionar novos itens, e até alterar os itens existentes.
+- `src/assets/tracks.js`: aqui você pode alterar as pistas, e até adicionar novas pistas.
